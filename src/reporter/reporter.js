@@ -11,3 +11,5 @@ class SummaryReporter extends events.EventEmitter {
     }
 
 }
+
+module.exports = SummaryReporter;
