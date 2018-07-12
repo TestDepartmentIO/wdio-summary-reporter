@@ -7,7 +7,13 @@ class SummaryReporter extends events.EventEmitter {
         this.baseReporter = baseReporter;
         this.config = config;
         this.options = options;
-        console.log('#################', this.baseReporter);
+        
+
+        this.on('runner:end', function (runner) {
+            console.log('¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢', runner);
+            console.log('\n#################', this.baseReporter);
+        });
+
     }
 
 }
