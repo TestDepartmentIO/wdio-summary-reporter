@@ -10,8 +10,8 @@ class SummaryReporter extends events.EventEmitter {
         
 
         this.on('runner:end', function (runner) {
-            console.log('¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢', runner);
-            console.log('\n#################', this.baseReporter);
+            console.log('¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢', JSON.stringify(runner));
+            console.log('\n#################', JSON.stringify(this.baseReporter));
         });
 
     }
