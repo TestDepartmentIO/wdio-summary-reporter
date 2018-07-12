@@ -1,4 +1,5 @@
 const events = require('events');
+const JSON = require('circular-json');
 
 class SummaryReporter extends events.EventEmitter {
 
