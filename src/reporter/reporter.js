@@ -10,7 +10,7 @@ class SummaryReporter extends events.EventEmitter {
         this.options = options;
 
         this.on('runner:start', function (runner) {
-            console.log('Runner:', runner.specs);
+            console.log('Runner:', JSON.stringify(runner));
         });
 
         this.on('suite:start', function (suite) { });
