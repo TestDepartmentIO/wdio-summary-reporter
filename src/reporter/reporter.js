@@ -39,7 +39,7 @@ class SummaryReporter extends events.EventEmitter {
         
         this.on('end', function (runner) {
             console.log(JSON.stringify(this.results));
-            console.log('\n', this.baseReporter.stats);
+            console.log('\n', JSON.stringify(this.baseReporter.stats));
         });
 
     }
