@@ -27,11 +27,11 @@ class SummaryReporter extends events.EventEmitter {
         });
 
         this.on('test:pass', function (test) {
-            this.results[test.cid].passing++
+            this.results[test.cid].passing++;
         });
 
         this.on('test:fail', function (test) {
-            this.results[test.cid].failing++
+            this.results[test.cid].failing++;
         });
 
         this.on('runner:end', function (runner) {
@@ -39,7 +39,7 @@ class SummaryReporter extends events.EventEmitter {
         
         this.on('end', function (runner) {
             console.log(JSON.stringify(this.results));
-            console.log('\n', this.baseReporter.stat);
+            console.log('\n', this.baseReporter.stats);
         });
 
     }
