@@ -8,11 +8,22 @@ class SummaryReporter extends events.EventEmitter {
         this.baseReporter = baseReporter;
         this.config = config;
         this.options = options;
-        
+
+        this.on('runner:start', function (runner) {
+            console.log('Runner:', runner.specs);
+        });
+
+        this.on('suite:start', function (suite) { });
+
+        this.on('test:pending', function (test) {
+            console.log('Cid is', test.cid);
+        });
+
+        this.on('test:pass', function (test) {
+            console.log(test);
+        });
 
         this.on('runner:end', function (runner) {
-            console.log('¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢¢', JSON.stringify(runner));
-            console.log('\n#################', JSON.stringify(this.baseReporter));
         });
 
     }
