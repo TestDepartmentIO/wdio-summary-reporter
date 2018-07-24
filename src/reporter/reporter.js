@@ -34,6 +34,10 @@ class SummaryReporter extends events.EventEmitter {
             this.results[test.cid].failing++;
         });
 
+        this.on('on:screenshot', function (runner) {
+            console.log('SNAAAAAAAAAAAP');
+        });
+
         this.on('runner:end', function (runner) {
         });
         
