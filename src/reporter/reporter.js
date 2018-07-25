@@ -287,16 +287,18 @@ class SummaryReporter extends events.EventEmitter {
 
                                 let errorHtmlCreated = '';
                                 if (state === 'fail' && error) {
+                                    errorHtmlCreated += '<table class="table is-striped">';
                                     const { message, type, stack } = error;
                                     if (type) {
-                                        errorHtmlCreated += `<strong>type: </strong>${type}\n`;
+                                        errorHtmlCreated += `<tr><td>Type:</td><td>${type}</td></tr>`;
                                     }
                                     if (message) {
-                                        errorHtmlCreated += `<strong>message: </strong>${message}\n`;
+                                        errorHtmlCreated += `<tr><td>Message:</td><td>${message}</td></tr>`;
                                     }
                                     if (stack) {
-                                        errorHtmlCreated += `<strong>stack: </strong>${stack}\n`;
+                                        errorHtmlCreated += `<tr><td>Stack:</td><td>${stack}</td></tr>`;
                                     }
+                                    errorHtmlCreated += '</table>';
                                 }
                                 !!errorHtmlCreated && (errorHtmlCreated = errorHtml.replace('{{error}}', errorHtmlCreated));
                                 
