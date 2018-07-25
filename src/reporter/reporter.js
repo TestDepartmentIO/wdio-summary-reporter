@@ -41,7 +41,7 @@ const html = `
             margin-right: 5px;
         }
 
-        .fail {
+        .fail p {
             color: #FF3860;   
         }
     </style>
@@ -58,7 +58,7 @@ const html = `
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
     {{result-summary}}
-    <div class="container>
+    <div class="container">
         <div class="tests">
             {{content}}
         </div>
@@ -193,9 +193,9 @@ class SummaryReporter extends events.EventEmitter {
                             screenshotsCode += `<div class="box"><h4 class="subtitle is-4">${suiteInfo.title}</h4>`;    
                             for (let testId of Object.keys(suiteInfo.tests)) {
                                 const { state, title, screenshots } = suiteInfo.tests[testId];
-                                const div1Opening = '<div class="test">';
+                                const div1Opening = `<div class="test ${state}">`;
                                 const divClosing = '</div>';
-                                const h1 = `<p class="subtitle is-5 ${state}">${title}</p>`
+                                const testNameTag = `<p class="subtitle is-5">${title}</p>`
                                 const div2Opening = '<div class="screenshots">';
                                 const div3Opening = '<div class="screenshots-scroll-container">';
 
@@ -203,7 +203,7 @@ class SummaryReporter extends events.EventEmitter {
                                     var data = base64Img.base64Sync(currentValue);
                                     return `${accumulator}<img class="screenshot-img" src="${data}" />`
                                 }, '');
-                                screenshotsCode += div1Opening + h1 + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
+                                screenshotsCode += div1Opening + testNameTag + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
                             }
                             screenshotsCode += '</div>';
                         }
