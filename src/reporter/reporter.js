@@ -20,7 +20,7 @@ const html = `
             font-family: Arial, Helvetica, sans-serif;
             color: #333;
         }
-        
+
         .test {
             width: 90%;
             margin: 3rem auto;
@@ -89,6 +89,12 @@ const resultSummaryTemplate = `
 <section class="section has-background-light">
     <div class="container">
         <div class="columns has-text-centered">
+            <div class="column">
+                <div class="notification">
+                    <h1 class=" title is-size-10">Total</h1>
+                    <h1 class=" title is-size-8">{{total}}</h1>
+                </div>
+            </div>
             <div class="column">
                 <div class="notification is-primary">
                     <h1 class=" title is-size-10">Passed</h1>
@@ -162,12 +168,13 @@ class SummaryReporter extends events.EventEmitter {
         this.on('end', function (runner) {
             let screenshotsCode = '';
             const runners = Object.keys(this.baseReporter.stats.runners);
-            let passed = 0, failed = 0, skipped = 0;
+            let total = 0, passed = 0, failed = 0, skipped = 0;
             // runners
             for (let cid of runners) {
                 passed += this.results[cid].passing;
                 failed += this.results[cid].failing;
                 skipped += this.results[cid].pending;
+                total = passed  + failed + skipped;
                 let runnerInfo = this.baseReporter.stats.runners[cid];
                 // specs
                 for (let specId of Object.keys(runnerInfo.specs)) {
@@ -200,6 +207,7 @@ class SummaryReporter extends events.EventEmitter {
                 }
             }
             const resultSummaryHtml = resultSummaryTemplate
+                                            .replace('{{total}}', total)
                                             .replace('{{passed}}', passed)
                                             .replace('{{failed}}', failed)
                                             .replace('{{skipped}}', skipped);
