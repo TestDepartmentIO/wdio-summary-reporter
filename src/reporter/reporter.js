@@ -57,8 +57,11 @@ const html = `
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <div class="tests">
-        --content--
+    {{result-summary}}
+    <div class="container>
+        <div class="tests">
+            {{content}}
+        </div>
     </div>
     <script type="text/javascript">
         var imgs = document.querySelectorAll('.screenshot-img');
@@ -84,6 +87,33 @@ const html = `
 </body>
 
 </html>
+`
+
+const resultSummaryTemplate = `
+<section class="section has-background-light">
+    <div class="container">
+        <div class="columns has-text-centered">
+            <div class="column">
+                <div class="notification is-primary">
+                    <h1 class=" title is-size-10">Passed</h1>
+                    <h1 class=" title is-size-8">{{passed}}</h1>
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification is-danger">
+                    <h1 class=" title is-size-10">Failed</h1>
+                    <h1 class=" title is-size-8">{{failed}}</h1>
+                </div>
+            </div>
+            <div class="column">
+                <div class="notification is-warning">
+                    <h1 class=" title is-size-10">Skipped</h1>
+                    <h1 class=" title is-size-8">{{skipped}}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 `
 
 class SummaryReporter extends events.EventEmitter {
@@ -136,10 +166,17 @@ class SummaryReporter extends events.EventEmitter {
         this.on('end', function (runner) {
             let screenshotsCode = '';
             const runners = Object.keys(this.baseReporter.stats.runners);
+            let passed = 0, failed = 0, skipped = 0;
+            // runners
             for (let cid of runners) {
+                passed += this.results[cid].passing;
+                failed += this.results[cid].failing;
+                skipped += this.results[cid].pending;
                 let runnerInfo = this.baseReporter.stats.runners[cid];
+                // specs
                 for (let specId of Object.keys(runnerInfo.specs)) {
                     let specInfo = runnerInfo.specs[specId];
+                    // suites
                     for (let suiteName of Object.keys(specInfo.suites)) {
                         var suiteInfo = specInfo.suites[suiteName];
                         if (!suiteInfo.uid.includes('before all')
@@ -162,7 +199,12 @@ class SummaryReporter extends events.EventEmitter {
                     }
                 }
             }
-            const finalHtml = html.replace('--content--', screenshotsCode);
+            const resultSummaryHtml = resultSummaryTemplate
+                                            .replace('{{passed}}', passed)
+                                            .replace('{{failed}}', failed)
+                                            .replace('{{skipped}}', skipped);
+                                            
+            const finalHtml = html.replace('{{result-summary}}', resultSummaryHtml).replace('{{content}}', screenshotsCode);
 
             const fileName = 'summary-report.html';
 
