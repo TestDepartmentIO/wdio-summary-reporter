@@ -40,6 +40,10 @@ const html = `
             width: 300px;
             margin-right: 5px;
         }
+
+        .fail {
+            color: #FF3860;   
+        }
     </style>
 </head>
 
@@ -182,19 +186,20 @@ class SummaryReporter extends events.EventEmitter {
                     screenshotsCode += `<div class="box"><h4 class="title is-4">Spec: ${specInfo.files[0]}</h4>`;
                     // suites
                     for (let suiteName of Object.keys(specInfo.suites)) {
-                        var suiteInfo = specInfo.suites[suiteName];
+                        const suiteInfo = specInfo.suites[suiteName];
                         if (!suiteInfo.uid.includes('before all')
                             && !suiteInfo.uid.includes('after all')
                             && Object.keys(suiteInfo.tests).length > 0) {
                             screenshotsCode += `<div class="box"><h4 class="subtitle is-4">${suiteInfo.title}</h4>`;    
                             for (let testId of Object.keys(suiteInfo.tests)) {
+                                const { state, title, screenshots } = suiteInfo.tests[testId];
                                 const div1Opening = '<div class="test">';
                                 const divClosing = '</div>';
-                                const h1 = `<p class="subtitle is-5">${suiteInfo.tests[testId].title}</p>`
+                                const h1 = `<p class="subtitle is-5 ${state}">${title}</p>`
                                 const div2Opening = '<div class="screenshots">';
                                 const div3Opening = '<div class="screenshots-scroll-container">';
 
-                                const imagesHtml = suiteInfo.tests[testId].screenshots.reduce((accumulator, currentValue) => {
+                                const imagesHtml = screenshots.reduce((accumulator, currentValue) => {
                                     var data = base64Img.base64Sync(currentValue);
                                     return `${accumulator}<img class="screenshot-img" src="${data}" />`
                                 }, '');

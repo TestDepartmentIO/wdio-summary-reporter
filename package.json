@@ -1,6 +1,6 @@
 {
   "name": "wdio-summary-reporter",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "",
   "main": "src/reporter/reporter.js",
   "scripts": {
