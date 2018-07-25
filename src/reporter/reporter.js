@@ -60,17 +60,21 @@ const html = `
     {{result-summary}}
     <section class="has-background-grey-lighter">
         <div class="container">
-            <div class="field">
-                <div id="filter" class="control">
-                    <label class="radio">
-                        <input type="radio" checked name="question" value="all"> All
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="question" value="passed"> Passed
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="question" value="failed"> Failed
-                    </label>
+            <div class="columns">
+                <div class="column is-half">
+                    <div class="field">
+                        <div id="filter" class="control">
+                            <label class="radio">
+                                <input type="radio" checked name="question" value="all"> All
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="question" value="passed"> Passed
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="question" value="failed"> Failed
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="tests">
@@ -189,6 +193,11 @@ const resultSummaryTemplate = `
     </div>
 </section>
 `
+const errorHtml = `
+<div class="notification is-danger">
+    {{error}}
+</div>
+`;
 
 class SummaryReporter extends events.EventEmitter {
 
@@ -264,7 +273,7 @@ class SummaryReporter extends events.EventEmitter {
                             && Object.keys(suiteInfo.tests).length > 0) {
                             screenshotsCode += `<div class="box"><h4 class="subtitle is-4">${suiteInfo.title}</h4>`;    
                             for (let testId of Object.keys(suiteInfo.tests)) {
-                                const { state, title, screenshots } = suiteInfo.tests[testId];
+                                const { state, title, screenshots, error } = suiteInfo.tests[testId];
                                 const div1Opening = `<div class="test ${state}">`;
                                 const divClosing = '</div>';
                                 const testNameTag = `<p class="subtitle is-5">${title}</p>`
@@ -275,7 +284,23 @@ class SummaryReporter extends events.EventEmitter {
                                     var data = embedImage ? base64Img.base64Sync(currentValue) : currentValue;
                                     return `${accumulator}<img class="screenshot-img" src="${data}" />`
                                 }, '');
-                                screenshotsCode += div1Opening + testNameTag + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
+
+                                let errorHtmlCreated = '';
+                                if (state === 'fail' && error) {
+                                    const { message, type, stack } = error;
+                                    if (type) {
+                                        errorHtmlCreated += `<strong>type: </strong>${type}\n`;
+                                    }
+                                    if (message) {
+                                        errorHtmlCreated += `<strong>message: </strong>${message}\n`;
+                                    }
+                                    if (stack) {
+                                        errorHtmlCreated += `<strong>stack: </strong>${stack}\n`;
+                                    }
+                                }
+                                !!errorHtmlCreated && (errorHtmlCreated = errorHtml.replace('{{error}}', errorHtmlCreated));
+                                
+                                screenshotsCode += div1Opening + testNameTag + div2Opening + div3Opening + imagesHtml + divClosing.repeat(2) + errorHtmlCreated + divClosing;
                             }
                             screenshotsCode += '</div>';
                         }
