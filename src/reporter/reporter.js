@@ -238,6 +238,10 @@ class SummaryReporter extends events.EventEmitter {
         });
 
         this.on('end', function (runner) {
+            const embedImage = (this.config.reporterOptions
+                && this.config.reporterOptions.summaryReporter
+                && this.config.reporterOptions.summaryReporter.embedImage === true)
+
             let screenshotsCode = '';
             const runners = Object.keys(this.baseReporter.stats.runners);
             let total = 0, passed = 0, failed = 0, skipped = 0;
@@ -268,7 +272,7 @@ class SummaryReporter extends events.EventEmitter {
                                 const div3Opening = '<div class="screenshots-scroll-container">';
 
                                 const imagesHtml = screenshots.reduce((accumulator, currentValue) => {
-                                    var data = base64Img.base64Sync(currentValue);
+                                    var data = embedImage ? base64Img.base64Sync(currentValue) : currentValue;
                                     return `${accumulator}<img class="screenshot-img" src="${data}" />`
                                 }, '');
                                 screenshotsCode += div1Opening + testNameTag + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
