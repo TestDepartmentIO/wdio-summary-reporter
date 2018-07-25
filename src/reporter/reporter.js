@@ -58,15 +58,35 @@ const html = `
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
     {{result-summary}}
-    <div class="container">
-        <div class="tests">
-            {{content}}
+    <section class="has-background-grey-lighter">
+        <div class="container">
+            <div class="field">
+                <div id="filter" class="control">
+                    <label class="radio">
+                        <input type="radio" checked name="question" value="all"> All
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="question" value="passed"> Passed
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="question" value="failed"> Failed
+                    </label>
+                </div>
+            </div>
+            <div class="tests">
+                {{content}}
+            </div>
         </div>
-    </div>
+    </section>
     <script type="text/javascript">
         var imgs = document.querySelectorAll('.screenshot-img');
         var modalEl = document.querySelector('.modal');
         var modalImgEl = document.querySelector('#show-me');
+        var allTests = document.querySelectorAll('.test');
+        var passedTests = document.querySelectorAll('.test.pass');
+        var failedTests = document.querySelectorAll('.test.fail');
+        var skippedTests = document.querySelectorAll('.test.pending');
+        var filterRadios = document.querySelectorAll("#filter input");
 
         // Register onClick listeners on thumbnails
         for (let i = 0; i < imgs.length; i++) {
@@ -75,6 +95,54 @@ const html = `
                 modalEl.classList.add('is-active');
             });
         }
+
+        // Show an element
+        const show = function (elem) {
+            elem.style.display = 'block';
+        };
+
+        // Hide an element
+        const hide = function (elem) {
+            elem.style.display = 'none';
+        };
+
+        const showAll = function() {
+            for (let i = 0; i < allTests.length; i++) {
+                show(allTests[i]);        
+            }
+        };
+
+        const hideAll = function() {
+            for (let i = 0; i < allTests.length; i++) {
+                hide(allTests[i]);        
+            }
+        };
+
+        const showFailed = function() {
+            for (let i = 0; i < failedTests.length; i++) {
+                show(failedTests[i]);        
+            } 
+        };
+
+        const showPassed = function() {
+            for (let i = 0; i < passedTests.length; i++) {
+                show(passedTests[i]);        
+            }
+        };
+        
+        for(var i = 0, max = filterRadios.length; i < max; i++) {
+            filterRadios[i].onclick = function(event) {
+                if(event.target.value === 'all') {
+                    showAll();
+                } else if(event.target.value === 'failed') {
+                    hideAll();
+                    showFailed();
+                } else if (event.target.value === 'passed') {
+                    hideAll();
+                    showPassed();
+                }
+            }
+        };
 
         // Register onClick listener on the modal
         modalEl.addEventListener('click', function hideModal(event) {
@@ -94,7 +162,7 @@ const resultSummaryTemplate = `
     <div class="container">
         <div class="columns has-text-centered">
             <div class="column">
-                <div class="notification">
+                <div class="notification is-link">
                     <h1 class=" title is-size-10">Total</h1>
                     <h1 class=" title is-size-8">{{total}}</h1>
                 </div>
