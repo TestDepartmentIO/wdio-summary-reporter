@@ -20,11 +20,7 @@ const html = `
             font-family: Arial, Helvetica, sans-serif;
             color: #333;
         }
-
-        h2 {
-            font-size: 1.5rem;
-        }
-
+        
         .test {
             width: 90%;
             margin: 3rem auto;
@@ -176,16 +172,18 @@ class SummaryReporter extends events.EventEmitter {
                 // specs
                 for (let specId of Object.keys(runnerInfo.specs)) {
                     let specInfo = runnerInfo.specs[specId];
+                    screenshotsCode += `<div class="box"><h4 class="title is-4">Spec: ${specInfo.files[0]}</h4>`;
                     // suites
                     for (let suiteName of Object.keys(specInfo.suites)) {
                         var suiteInfo = specInfo.suites[suiteName];
                         if (!suiteInfo.uid.includes('before all')
                             && !suiteInfo.uid.includes('after all')
                             && Object.keys(suiteInfo.tests).length > 0) {
+                            screenshotsCode += `<div class="box"><h4 class="subtitle is-4">${suiteInfo.title}</h4>`;    
                             for (let testId of Object.keys(suiteInfo.tests)) {
                                 const div1Opening = '<div class="test">';
                                 const divClosing = '</div>';
-                                const h2 = `<h2>${suiteInfo.tests[testId].title}</h2>`
+                                const h1 = `<p class="subtitle is-5">${suiteInfo.tests[testId].title}</p>`
                                 const div2Opening = '<div class="screenshots">';
                                 const div3Opening = '<div class="screenshots-scroll-container">';
 
@@ -193,10 +191,12 @@ class SummaryReporter extends events.EventEmitter {
                                     var data = base64Img.base64Sync(currentValue);
                                     return `${accumulator}<img class="screenshot-img" src="${data}" />`
                                 }, '');
-                                screenshotsCode += div1Opening + h2 + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
+                                screenshotsCode += div1Opening + h1 + div2Opening + div3Opening + imagesHtml + divClosing.repeat(3);
                             }
+                            screenshotsCode += '</div>';
                         }
                     }
+                    screenshotsCode += '</div>';
                 }
             }
             const resultSummaryHtml = resultSummaryTemplate
